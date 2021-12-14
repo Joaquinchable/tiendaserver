@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../db');
-
+const permission = require('../middlewares/permission');
 //CRUD
 
 // Get all products
-router.get('/', async (req, res) =>{
+router.get('/',  permission('admin', 'client'), async (req, res) =>{
 const products = await sequelize.models.products.findAndCountAll();
 return res.status(200).json({ data: products });
 })
 
 //Body-parse
 // Create a new product
-router.post('/', async (req, res) =>{
+router.post('/', permission('admin'), async (req, res) =>{
 const { body } = req;
 const product = await sequelize.models.products.create({
    name: body.name,
@@ -26,7 +26,7 @@ return res.status(201).json({ data: product })
 
 
 // Update a product by id
-router.put('/:id', async (req, res) =>{
+router.put('/:id', permission('admin'), async (req, res) =>{
 const { body, params: { id } } = req;
 const product = await sequelize.models.products.findByPk(id);
 if (!product) {
@@ -43,7 +43,7 @@ if (!product) {
 
 
 // Delete a product by id
-router.delete('/:id', async (req, res) =>{
+router.delete('/:id',permission('admin'), async (req, res) =>{
 const { params: { id } } = req;
 const product = await sequelize.models.products.findByPk(id);
 if (!product) {

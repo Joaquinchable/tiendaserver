@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const sequelize = require("../db");
+const permission = require('../middlewares/permission');
 
 // Get all users
 
-router.get("/",  async (req, res) => {
+router.get("/",  permission('admin'),  async (req, res) => {
     const users = await sequelize.models.users.findAndCountAll();
     return res.status(200).json({ data: users });
   });
@@ -13,7 +14,7 @@ router.get("/",  async (req, res) => {
 
 // Creating a new user
 
-router.post("/",  async (req, res) => {
+router.post("/",  permission('admin'),  async (req, res) => {
     const { body } = req;
   const user = await sequelize.models.users.create({
     name: body.name,
@@ -29,7 +30,7 @@ router.post("/",  async (req, res) => {
 
 
 // Update a user by id
-router.put("/:id",  async (req, res) => {
+router.put("/:id",  permission('admin'),  async (req, res) => {
 const {
         body,
         params: { id },
@@ -53,7 +54,7 @@ const {
 
 // Delete a user by id
 
-router.delete("/:id",  async (req, res) => {
+router.delete("/:id",  permission('admin'),  async (req, res) => {
     const {
         params: { id },
       } = req;
